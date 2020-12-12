@@ -12,6 +12,7 @@ const authRouter = require('./routes/authRouter')
 const usersRouter = require('./routes/usersRouter')
 const shopsRouter = require('./routes/shopsRouter')
 const productRouter = require('./routes/productRouter')
+const orderRouter = require('./routes/orderRouter')
 
 app.use(express.json());
 app.use(morgan('dev'));
@@ -21,8 +22,9 @@ app.use('/api/auth', authRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/shops', shopsRouter)
 app.use('/api/products', productRouter)
+app.use('/api/orders', orderRouter)
   
-connectDB()
+connectDB() 
 
 const PORT = process.env.PORT || 5000
 
