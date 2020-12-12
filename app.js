@@ -9,12 +9,16 @@ dotenv.config()
 const app = express();
 
 const authRouter = require('./routes/authRouter')
+const usersRouter = require('./routes/usersRouter')
+const shopsRouter = require('./routes/shopsRouter')
 
 app.use(express.json());
 app.use(morgan('dev'));
 
 
 app.use('/api/auth', authRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/shops', shopsRouter)
   
 connectDB()
 

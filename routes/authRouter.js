@@ -6,7 +6,9 @@ const { body, validationResult } = require('express-validator');
 const User = require('../models/userModel.js')
 
 
-// Register route
+// @desc    Register a user
+// @route   /api/auth/register
+// @access  Public
 router.post('/register',
     [   
         body('firstname').not().isEmpty().trim(),
@@ -48,8 +50,9 @@ router.post('/register',
 })
 
 
-// Login route
-
+// @desc    Login User
+// @route   /api/auth/login
+// @access  Public
 router.post('/login',
     [
         body('email').isEmail(),
