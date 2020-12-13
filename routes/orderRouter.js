@@ -7,16 +7,16 @@ const auth = require('../middleware/auth')
 
 // @desc    Create a new order
 // @route   /api/orders
-// @access  Private
+// @access  Public
 router.post('/', 
     [   
         body('firstname').not().isEmpty().trim().withMessage('First name must not be empty'),
         body('lastname').not().isEmpty().trim().withMessage('Last name must not be empty'),
-        body('address').not().isEmpty().trim().withMessage('Shipping address must not be empty'),
-        body('city').not().isEmpty().trim().withMessage('City must not be empty'),
-        body('code').not().isEmpty().trim().withMessage('Postal Code must not be empty'),
-        body('country').not().isEmpty().trim().withMessage('Country must not be empty')
-    ], auth,
+        body('orderItems').not().isEmpty().trim().withMessage('Order Items must not be empty'),
+        body('shippingAddress').not().isEmpty().trim().withMessage('Shipping address must not be empty'),
+        body('totalPrice').not().isEmpty().trim().withMessage('Postal Code must not be empty'),
+        body('shippingPrice').not().isEmpty().trim().withMessage('Shipping Price must not be empty')
+    ], 
 
     async (req , res) => {
 
@@ -28,26 +28,17 @@ router.post('/',
         
     try {
 
+        const {firstname, lastname, shippingAddress, shippingPrice, totalPrice, orderItems} = req.body
+
+        console.log(firstname, lastname, shippingAddress, shippingPrice, totalPrice, orderItems)
 
         const orderDetails = new Order({
-            firstname : req.body.firstname,
-            lastname : req.body.lastname,
-            shippingAddress : {
-                address : req.body.address,
-                city : req.body.city,
-                postalCode : req.body.code,
-                country : req.body.country,
-            },
-            shippingPrice : 20.00,
-            orderItems : [
-                {
-                    name : "Demo Prod",
-                    quantity : 2,
-                    image : "https://product.image",
-                    price : 120,
-                    product : "5fd4a8a032c43f2c6f411f7d",
-                }
-            ]
+            firstname,
+            lastname,
+            shippingAddress,
+            shippingPrice,
+            totalPrice,
+            orderItems
         })
 
         const order = await orderDetails.save() 
@@ -56,7 +47,7 @@ router.post('/',
             "order" : order
         })
     } catch (error) {
-        return res.status(500).send({"msg" : "Server error"})       
+        return res.status(500).send({"msg" : "Server error", "error" : error})       
     }
 
 

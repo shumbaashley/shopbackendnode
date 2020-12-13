@@ -34,16 +34,16 @@ const OrderSchema = mongoose.Schema({
         required : true,
         default : 0
     },
-    paymentMethod : {
-        type : String,
-        required : true
-    },
-    paymentResult : {
-        id : {type : String, required : true},
-        status : {type : String, required : true},
-        update_time : {type : String, required : true},
-        email_address : {type : String, required : true},
-    },
+    // paymentMethod : {
+    //     type : String,
+    //     required : true
+    // },
+    // paymentResult : {
+    //     id : {type : String, required : true},
+    //     status : {type : String, required : true},
+    //     update_time : {type : String, required : true},
+    //     email_address : {type : String, required : true},
+    // },
     isPaid : {
         type : Boolean,
         required : true,
@@ -53,13 +53,13 @@ const OrderSchema = mongoose.Schema({
         type : Boolean,
         required : true,
         default : false
-    },
-    paidAt : {
-        type : Date
-    },
-    deliveredAt : {
-        type : Date
-    },
+    }
+    // paidAt : {
+    //     type : Date
+    // },
+    // deliveredAt : {
+    //     type : Date
+    // },
 }, {
     timestamps : true
 })
