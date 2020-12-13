@@ -3,7 +3,7 @@ const router = express.Router()
 const Shop = require('../models/shopModel')
 const User = require('../models/userModel')
 const { body, validationResult } = require('express-validator');
-const auth = require('../utils/verifyToken')
+const auth = require('../middleware/auth')
 
 
 // @desc    Create a new shop
@@ -16,7 +16,7 @@ router.post('/',
         body('location').not().isEmpty().trim().withMessage('must not be empty'),
         body('description').not().isEmpty().trim().withMessage('must not be empty'),
         body('phone').not().isEmpty().trim().isLength({ min: 8 }).withMessage('must be at least 8 chars long')
-    ],
+    ], auth,
 
     async (req , res) => {
         console.log(req.user)
@@ -28,12 +28,10 @@ router.post('/',
         }
         
     try {
-        // const user = await User.findById(req.user._id)
 
-        // console.log(user)
 
         const shopDetails = new Shop({
-            user : "5fd484559f21002a7fa97f08",
+            owner : req.user.id,
             name : req.body.name,
             image : req.body.image,
             location : req.body.location,
@@ -45,7 +43,8 @@ router.post('/',
 
         const shop = await shopDetails.save() 
         return res.status(201).send({
-            "msg" : "Shop created"
+            "msg" : "Shop created",
+            "shop" : shop
         })
     } catch (error) {
         return res.status(500).send({"msg" : "Server error"})       
@@ -107,7 +106,7 @@ router.delete('/:id', async (req , res) => {
     
         // check if user deleting the shop owns the shop
     
-        if(shop.owner.toString() !== req.user.id) return res.status(401).send({"msg" : "You are not allowed to delete this shop"})
+        // if(shop.owner.toString() !== req.user.id) return res.status(401).send({"msg" : "You are not allowed to delete this shop"})
     
         await shop.remove()
         return res.json({"msg" : "Shop deleted successfully"}) 

@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router()
-const product = require('../models/productModel')
-const User = require('../models/userModel')
+const Shop = require('../models/shopModel')
 const Product = require('../models/productModel')
 const { body, validationResult } = require('express-validator');
-const auth = require('../utils/verifyToken')
+const auth = require('../middleware/auth')
 
 
 // @desc    Create a new product
@@ -12,16 +11,16 @@ const auth = require('../utils/verifyToken')
 // @access  Private
 router.post('/', 
     [   
-        body('name').not().isEmpty().trim().withMessage('must not be empty'),
-        body('image').not().isEmpty().trim().withMessage('must not be empty'),
-        body('price').not().isEmpty().trim().withMessage('must not be empty'),
-        body('brand').not().isEmpty().trim().withMessage('must not be empty'),
-        body('description').not().isEmpty().trim().withMessage('must not be empty'),
-        body('category').not().isEmpty().trim().withMessage('must not be empty')
-    ],
+        body('name').not().isEmpty().trim().withMessage('Product name must not be empty'),
+        body('image').not().isEmpty().trim().withMessage('Image field must not be empty'),
+        body('price').not().isEmpty().trim().withMessage('Price must not be empty'),
+        body('brand').not().isEmpty().trim().withMessage('Brand must not be empty'),
+        body('description').not().isEmpty().trim().withMessage('Description must not be empty'),
+        body('countInStock').not().isEmpty().trim().withMessage('Please specific the number you have in stock'),
+        body('category').not().isEmpty().trim().withMessage('Category must not be empty')
+    ], auth,
 
     async (req , res) => {
-        console.log(req.user)
 
         // Validate product data
         const errors = validationResult(req);
@@ -30,25 +29,25 @@ router.post('/',
         }
         
     try {
-        // const user = await User.findById(req.user._id)
+        // const user = await User.findById(req.user.id)
 
-        // console.log(user)
+        const shop = await Shop.find({owner : req.user.id})
 
         const productDetails = new Product({
-            shop : "5fd4a09f71c0e21bfe0ecea2",
+            shop : shop.id,
             name : req.body.name,
             image : req.body.image,
             price : req.body.price,
             description : req.body.description,
             brand : req.body.brand,
             category : req.body.category,
+            countInStock : req.body.countInStock
         })
 
-        console.log(productDetails)
 
         const product = await productDetails.save() 
         return res.status(201).send({
-            "msg" : "Product created",
+            "msg" : "Product created successfully",
             "product" : product
         })
     } catch (error) {

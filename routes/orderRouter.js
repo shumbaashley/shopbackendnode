@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router()
 const Order = require('../models/orderModel')
-const User = require('../models/userModel')
 const { body, validationResult } = require('express-validator');
-const auth = require('../utils/verifyToken')
+const auth = require('../middleware/auth')
 
 
 // @desc    Create a new order
@@ -11,16 +10,15 @@ const auth = require('../utils/verifyToken')
 // @access  Private
 router.post('/', 
     [   
-        body('firstname').not().isEmpty().trim().withMessage('must not be empty'),
-        body('lastname').not().isEmpty().trim().withMessage('must not be empty'),
-        body('address').not().isEmpty().trim().withMessage('must not be empty'),
-        body('city').not().isEmpty().trim().withMessage('must not be empty'),
-        body('code').not().isEmpty().trim().withMessage('must not be empty'),
-        body('country').not().isEmpty().trim().withMessage('must not be empty')
-    ],
+        body('firstname').not().isEmpty().trim().withMessage('First name must not be empty'),
+        body('lastname').not().isEmpty().trim().withMessage('Last name must not be empty'),
+        body('address').not().isEmpty().trim().withMessage('Shipping address must not be empty'),
+        body('city').not().isEmpty().trim().withMessage('City must not be empty'),
+        body('code').not().isEmpty().trim().withMessage('Postal Code must not be empty'),
+        body('country').not().isEmpty().trim().withMessage('Country must not be empty')
+    ], auth,
 
     async (req , res) => {
-        // console.log(req.user)
 
         // Validate order data
         const errors = validationResult(req);
@@ -29,9 +27,7 @@ router.post('/',
         }
         
     try {
-        // const user = await User.findById(req.user._id)
 
-        // console.log(user)
 
         const orderDetails = new Order({
             firstname : req.body.firstname,
@@ -50,18 +46,9 @@ router.post('/',
                     image : "https://product.image",
                     price : 120,
                     product : "5fd4a8a032c43f2c6f411f7d",
-                },
-                {
-                    name : "Demo Prod 3",
-                    quantity : 1,
-                    image : "https://products.image",
-                    price : 120,
-                    product : "5fd4a8a032c43f2c6f411f7d",
                 }
             ]
         })
-
-        console.log(orderDetails)
 
         const order = await orderDetails.save() 
         return res.status(201).send({

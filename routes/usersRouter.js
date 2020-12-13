@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const User = require('../models/userModel');
-const auth = require('../utils/verifyToken')
+const auth = require('../middleware/auth')
 
 
 // @desc    Get all users

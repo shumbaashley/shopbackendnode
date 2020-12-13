@@ -22,7 +22,7 @@ const shopSchema = mongoose.Schema({
         type : String,
         required : true
     },
-    user : {
+    owner : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User'
     }
